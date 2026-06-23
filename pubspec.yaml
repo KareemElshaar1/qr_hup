@@ -1,0 +1,53 @@
+name: barcode_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  barcode_widget: ^2.0.0
+  mobile_scanner: ^7.2.0
+  image_picker: ^1.1.2
+  file_picker: ^8.1.7
+  path_provider: ^2.1.5
+  image_cropper: ^9.1.0
+  http: ^1.2.2
+  url_launcher: ^6.3.1
+  shared_preferences: ^2.3.3
+  share_plus: ^10.1.4
+  gal: ^2.3.1
+  uuid: ^4.5.1
+  wifi_iot: ^0.3.19+2
+  permission_handler: ^11.4.0
+  flutter_screenutil: ^5.9.3
+  cupertino_icons: ^1.0.9
+  flutter_launcher_icons: ^0.14.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/qr_logo.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/qr_logo.png"
+  min_sdk_android: 21
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icons/
+    - assets/qr_logo.png
