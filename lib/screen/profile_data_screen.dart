@@ -487,7 +487,7 @@ class _SocialTab extends StatelessWidget {
                   width: 20.w,
                   height: 20.w,
                 ),
-                keyboardType: TextInputType.phone
+                keyboardType: TextInputType.phone,
               ),
               SizedBox(height: 12.h),
               _Field(
@@ -508,7 +508,7 @@ class _SocialTab extends StatelessWidget {
                   width: 20.w,
                   height: 20.w,
                 ),
-                keyboardType: TextInputType.phone
+                keyboardType: TextInputType.phone,
               ),
               SizedBox(height: 12.h),
               _Field(
@@ -540,7 +540,6 @@ class _SocialTab extends StatelessWidget {
                   width: 20.w,
                   height: 20.w,
                 ),
-
               ),
               SizedBox(height: 12.h),
               _Field(

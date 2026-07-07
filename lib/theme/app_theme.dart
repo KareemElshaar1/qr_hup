@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppColors {
-  // Dark
-  static const backgroundTop = Color(0xFF0D1117);
-  static const backgroundBottom = Color(0xFF161B22);
-  static const accent = Color(0xFF58A6FF);
-  static const accentSecondary = Color(0xFFBC8CFF);
-  static const surface = Color(0xFF1C2128);
-  static const surfaceLight = Color(0xFF262D36);
-  static const textPrimary = Color(0xFFE6EDF3);
-  static const textMuted = Color(0xFF8B949E);
-  static const danger = Color(0xFFFF7B72);
+  // Dark - Cyberpunk/Neon space theme
+  static const backgroundTop = Color(0xFF060613);
+  static const backgroundBottom = Color(0xFF0E0E27);
+  static const accent = Color(0xFF00E5FF); // Cyber Cyan
+  static const accentSecondary = Color(0xFFFF007F); // Cyber Magenta
+  static const surface = Color(0xFF131332);
+  static const surfaceLight = Color(0xFF1F1F4E);
+  static const textPrimary = Color(0xFFF2F4FF);
+  static const textMuted = Color(0xFF8692C0);
+  static const danger = Color(0xFFFF2A5F);
 
   // Light — refined palette
-  static const lightBackground = Color(0xFFF4F7FB);
+  static const lightBackground = Color(0xFFF5F7FB);
   static const lightSurface = Color(0xFFFFFFFF);
-  static const lightSurfaceAlt = Color(0xFFE9EEF5);
-  static const lightText = Color(0xFF0F172A);
-  static const lightMuted = Color(0xFF64748B);
-  static const lightAccent = Color(0xFF2563EB);
-  static const lightAccentSoft = Color(0xFF60A5FA);
+  static const lightSurfaceAlt = Color(0xFFEAF0F9);
+  static const lightText = Color(0xFF080E27);
+  static const lightMuted = Color(0xFF6E7A9D);
+  static const lightAccent = Color(0xFF0066FF); // Electric Blue
+  static const lightAccentSoft = Color(0xFF4DA3FF);
 }
 
 ThemeData buildDarkTheme() => _buildTheme(

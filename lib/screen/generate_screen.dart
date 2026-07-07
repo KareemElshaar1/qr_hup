@@ -157,36 +157,38 @@ class _GenerateScreenState extends State<GenerateScreen>
               children: [
                 // ---------------- Hero header ----------------
                 FadeSlideIn(
-                  child: GlassCard(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 22,
-                      vertical: 28,
-                    ),
-                    child: Column(
-                      children: [
-                        const PulseIcon(icon: Icons.qr_code_scanner_rounded),
-                        const SizedBox(height: 18),
-                        Text(
-                          'باركود',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.w800,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'اكتب البيانات أو امسح باركود جاهز — النتيجة تظهر فوراً',
-                          style: TextStyle(
-                            color: AppColors.textMuted,
-                            height: 1.5,
+                  child: TiltWidget(
+                    child: GlassCard(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 22,
+                        vertical: 28,
+                      ),
+                      child: Column(
+                        children: [
+                          const PulseIcon(icon: Icons.qr_code_scanner_rounded),
+                          const SizedBox(height: 18),
+                          Text(
+                            'باركود',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: AppColors.textPrimary,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          const Text(
+                            'اكتب البيانات أو امسح باركود جاهز — النتيجة تظهر فوراً',
+                            style: TextStyle(
+                              color: AppColors.textMuted,
+                              height: 1.5,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -196,54 +198,56 @@ class _GenerateScreenState extends State<GenerateScreen>
                 // ---------------- Input section ----------------
                 FadeSlideIn(
                   delay: const Duration(milliseconds: 120),
-                  child: GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _sectionHeader(
-                          icon: Icons.edit_note_rounded,
-                          title: 'إنشاء باركود يدوي',
-                          subtitle: 'اكتب أي نص أو كود وحوّله لباركود فوراً',
-                        ),
-                        const SizedBox(height: 18),
-                        TextField(
-                          controller: _controller,
-                          maxLines: 3,
-                          style: const TextStyle(color: AppColors.textPrimary),
-                          decoration: const InputDecoration(
-                            labelText: 'اكتب الداتا هنا',
-                            hintText: 'مثال: اسم المنتج، كود، رقم...',
+                  child: TiltWidget(
+                    child: GlassCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _sectionHeader(
+                            icon: Icons.edit_note_rounded,
+                            title: 'إنشاء باركود يدوي',
+                            subtitle: 'اكتب أي نص أو كود وحوّله لباركود فوراً',
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: _generate,
-                                icon: const Icon(Icons.auto_awesome_rounded),
-                                label: const Text('عرض الباركود'),
-                              ),
+                          const SizedBox(height: 18),
+                          TextField(
+                            controller: _controller,
+                            maxLines: 3,
+                            style: const TextStyle(color: AppColors.textPrimary),
+                            decoration: const InputDecoration(
+                              labelText: 'اكتب الداتا هنا',
+                              hintText: 'مثال: اسم المنتج، كود، رقم...',
                             ),
-                            if (_data != null && _data!.isNotEmpty) ...[
-                              const SizedBox(width: 10),
-                              IconButton(
-                                onPressed: _clear,
-                                tooltip: 'مسح',
-                                icon: const Icon(
-                                  Icons.close_rounded,
-                                  color: AppColors.textMuted,
-                                ),
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      AppColors.textMuted.withValues(alpha: 0.08),
-                                  shape: const CircleBorder(),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: _generate,
+                                  icon: const Icon(Icons.auto_awesome_rounded),
+                                  label: const Text('عرض الباركود'),
                                 ),
                               ),
+                              if (_data != null && _data!.isNotEmpty) ...[
+                                const SizedBox(width: 10),
+                                IconButton(
+                                  onPressed: _clear,
+                                  tooltip: 'مسح',
+                                  icon: const Icon(
+                                    Icons.close_rounded,
+                                    color: AppColors.textMuted,
+                                  ),
+                                  style: IconButton.styleFrom(
+                                    backgroundColor:
+                                        AppColors.textMuted.withValues(alpha: 0.08),
+                                    shape: const CircleBorder(),
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -275,101 +279,103 @@ class _GenerateScreenState extends State<GenerateScreen>
                           delay: const Duration(milliseconds: 80),
                           child: ScaleTransition(
                             scale: _barcodeScale,
-                            child: GlassCard(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 10,
-                                        height: 10,
-                                        decoration: const BoxDecoration(
-                                          color: AppColors.accent,
-                                          shape: BoxShape.circle,
+                            child: TiltWidget(
+                              child: GlassCard(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 10,
+                                          height: 10,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.accent,
+                                            shape: BoxShape.circle,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Text(
-                                        'الباركود جاهز',
-                                        style: TextStyle(
-                                          color: AppColors.textPrimary,
-                                          fontWeight: FontWeight.w700,
+                                        const SizedBox(width: 10),
+                                        const Text(
+                                          'الباركود جاهز',
+                                          style: TextStyle(
+                                            color: AppColors.textPrimary,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      IconButton(
-                                        onPressed: () {
-                                          Clipboard.setData(
-                                            ClipboardData(text: _data!),
-                                          );
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text('تم النسخ'),
-                                            ),
-                                          );
-                                        },
-                                        tooltip: 'نسخ النص',
-                                        icon: const Icon(
-                                          Icons.copy_rounded,
-                                          size: 18,
-                                          color: AppColors.textMuted,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 18),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppColors.accent
-                                              .withValues(alpha: 0.15),
-                                          blurRadius: 20,
-                                          offset: const Offset(0, 8),
+                                        const Spacer(),
+                                        IconButton(
+                                          onPressed: () {
+                                            Clipboard.setData(
+                                              ClipboardData(text: _data!),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text('تم النسخ'),
+                                              ),
+                                            );
+                                          },
+                                          tooltip: 'نسخ النص',
+                                          icon: const Icon(
+                                            Icons.copy_rounded,
+                                            size: 18,
+                                            color: AppColors.textMuted,
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    child: BarcodeWidget(
-                                      barcode: Barcode.code128(),
-                                      data: _data!,
+                                    const SizedBox(height: 18),
+                                    Container(
                                       width: double.infinity,
-                                      height: 120,
-                                      drawText: true,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: AppColors.accent
+                                                .withValues(alpha: 0.15),
+                                            blurRadius: 20,
+                                            offset: const Offset(0, 8),
+                                          ),
+                                        ],
+                                      ),
+                                      child: BarcodeWidget(
+                                        barcode: Barcode.code128(),
+                                        data: _data!,
+                                        width: double.infinity,
+                                        height: 120,
+                                        drawText: true,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 14),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.textMuted
-                                          .withValues(alpha: 0.06),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      _data!,
-                                      style: const TextStyle(
-                                        color: AppColors.textMuted,
-                                        fontSize: 13,
-                                        height: 1.5,
+                                    const SizedBox(height: 14),
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 10,
                                       ),
-                                      textAlign: TextAlign.center,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.textMuted
+                                            .withValues(alpha: 0.06),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        _data!,
+                                        style: const TextStyle(
+                                          color: AppColors.textMuted,
+                                          fontSize: 13,
+                                          height: 1.5,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -413,26 +419,28 @@ class _GenerateScreenState extends State<GenerateScreen>
                 // ---------------- Actions section ----------------
                 FadeSlideIn(
                   delay: const Duration(milliseconds: 200),
-                  child: GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _sectionHeader(
-                          icon: Icons.badge_rounded,
-                          title: 'البطاقة الشخصية',
-                          subtitle:
-                              'أدخل بياناتك مرة واحدة، وحوّلها لباركود منظم يقدر أي شخص يقرأه',
-                        ),
-                        const SizedBox(height: 18),
-                        ElevatedButton.icon(
-                          onPressed: _openProfileEditor,
-                          icon: const Icon(Icons.person_add_alt_1_rounded),
-                          label: const Text('إدخال بياناتي الشخصية'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.textPrimary,
+                  child: TiltWidget(
+                    child: GlassCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _sectionHeader(
+                            icon: Icons.badge_rounded,
+                            title: 'البطاقة الشخصية',
+                            subtitle:
+                                'أدخل بياناتك مرة واحدة، وحوّلها لباركود منظم يقدر أي شخص يقرأه',
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 18),
+                          ElevatedButton.icon(
+                            onPressed: _openProfileEditor,
+                            icon: const Icon(Icons.person_add_alt_1_rounded),
+                            label: const Text('إدخال بياناتي الشخصية'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

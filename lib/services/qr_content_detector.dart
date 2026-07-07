@@ -8,6 +8,56 @@ class QrContentDetector {
     final profile = ProfileData.tryParse(trimmed);
 
     if (profile != null) {
+      final isPureMedia = profile.mediaType != ProfileMediaType.none &&
+          profile.mediaUrl != null &&
+          profile.jobTitle.isEmpty &&
+          profile.email.isEmpty &&
+          profile.notes.isEmpty &&
+          profile.facebook.isEmpty &&
+          profile.linkedin.isEmpty &&
+          profile.instagram.isEmpty &&
+          profile.phone.isEmpty &&
+          profile.phone2.isEmpty &&
+          profile.address.isEmpty &&
+          profile.whatsapp.isEmpty &&
+          profile.telegram.isEmpty &&
+          profile.twitter.isEmpty &&
+          profile.youtube.isEmpty &&
+          profile.tiktok.isEmpty;
+
+      if (isPureMedia) {
+        if (profile.mediaType == ProfileMediaType.image) {
+          return QrContent(
+            type: QrContentType.image,
+            raw: trimmed,
+            title: profile.fullName,
+            subtitle: profile.mediaUrl,
+            actionUrl: profile.mediaUrl,
+            imageUrl: profile.mediaUrl,
+          );
+        } else if (profile.mediaType == ProfileMediaType.video) {
+          return QrContent(
+            type: QrContentType.video,
+            raw: trimmed,
+            title: profile.fullName,
+            subtitle: profile.mediaUrl,
+            actionUrl: profile.mediaUrl,
+          );
+        } else if (profile.mediaType == ProfileMediaType.file) {
+          final isPdf = _isPdfUrl(profile.mediaUrl!);
+          final isVideo = _isVideoUrl(profile.mediaUrl!);
+          return QrContent(
+            type: isPdf
+                ? QrContentType.pdf
+                : (isVideo ? QrContentType.video : QrContentType.url),
+            raw: trimmed,
+            title: profile.fullName,
+            subtitle: profile.mediaUrl,
+            actionUrl: profile.mediaUrl,
+          );
+        }
+      }
+
       final imageUrl = profile.mediaType == ProfileMediaType.image
           ? profile.mediaUrl
           : (_isImageUrl(profile.mediaUrl) ? profile.mediaUrl : null);
@@ -96,6 +146,15 @@ class QrContentDetector {
           actionUrl: mediaUrl,
         );
       }
+      if (trimmed.contains('فيديو') || _isVideoUrl(mediaUrl)) {
+        return QrContent(
+          type: QrContentType.video,
+          raw: trimmed,
+          title: 'فيديو',
+          subtitle: mediaUrl,
+          actionUrl: mediaUrl,
+        );
+      }
     }
 
     if (_isImageUrl(trimmed)) {
@@ -114,6 +173,16 @@ class QrContentDetector {
         type: QrContentType.pdf,
         raw: trimmed,
         title: 'ملف PDF',
+        subtitle: trimmed,
+        actionUrl: trimmed,
+      );
+    }
+
+    if (_isVideoUrl(trimmed)) {
+      return QrContent(
+        type: QrContentType.video,
+        raw: trimmed,
+        title: 'فيديو',
         subtitle: trimmed,
         actionUrl: trimmed,
       );
@@ -166,5 +235,17 @@ class QrContentDetector {
 
   static bool _isPdfUrl(String value) {
     return value.toLowerCase().split('?').first.endsWith('.pdf');
+  }
+
+  static bool _isVideoUrl(String value) {
+    final lower = value.toLowerCase().split('?').first;
+    return lower.endsWith('.mp4') ||
+        lower.endsWith('.mov') ||
+        lower.endsWith('.avi') ||
+        lower.endsWith('.mkv') ||
+        lower.endsWith('.webm') ||
+        lower.endsWith('.3gp') ||
+        lower.endsWith('.flv') ||
+        lower.endsWith('.m4v');
   }
 }

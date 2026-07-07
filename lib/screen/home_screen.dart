@@ -46,46 +46,48 @@ class HomeScreen extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
                     child: FadeSlideIn(
-                      child: GlassCard(
-                        padding: EdgeInsets.all(22.w),
-                        child: Row(
-                          children: [
-                            Container(
-                            width: 56.w,
-                            height: 56.w,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    colors.accent.withValues(alpha: 0.25),
-                                    colors.accentSecondary.withValues(alpha: 0.2),
+                      child: TiltWidget(
+                        child: GlassCard(
+                          padding: EdgeInsets.all(22.w),
+                          child: Row(
+                            children: [
+                              Container(
+                              width: 56.w,
+                              height: 56.w,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      colors.accent.withValues(alpha: 0.25),
+                                      colors.accentSecondary.withValues(alpha: 0.2),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Icon(Icons.qr_code_2_rounded, color: colors.accent, size: 30),
+                              ),
+                              SizedBox(width: 16.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      context.tr('welcome'),
+                                      style: TextStyle(
+                                        color: colors.textPrimary,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      context.tr('welcome_sub'),
+                                      style: TextStyle(color: colors.textMuted),
+                                    ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Icon(Icons.qr_code_2_rounded, color: colors.accent, size: 30),
-                            ),
-                            SizedBox(width: 16.w),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    context.tr('welcome'),
-                                    style: TextStyle(
-                                      color: colors.textPrimary,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    context.tr('welcome_sub'),
-                                    style: TextStyle(color: colors.textMuted),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -11,6 +11,7 @@ enum QrRecordCategory {
   profile,
   pdf,
   image,
+  video,
   other,
 }
 

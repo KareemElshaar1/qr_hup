@@ -15,6 +15,7 @@ enum QrContentType {
   profile,
   image,
   pdf,
+  video,
 }
 
 class QrContent {
@@ -42,6 +43,7 @@ class QrContent {
       actionUrl != null &&
       (type == QrContentType.url ||
           type == QrContentType.pdf ||
+          type == QrContentType.video ||
           type == QrContentType.whatsapp ||
           type == QrContentType.location);
 
@@ -67,6 +69,8 @@ class QrContent {
         return QrRecordCategory.image;
       case QrContentType.pdf:
         return QrRecordCategory.pdf;
+      case QrContentType.video:
+        return QrRecordCategory.video;
     }
   }
 
@@ -93,6 +97,8 @@ class QrContent {
         return s.t('type_image');
       case QrContentType.pdf:
         return s.t('type_pdf');
+      case QrContentType.video:
+        return s.t('type_video');
     }
   }
 }

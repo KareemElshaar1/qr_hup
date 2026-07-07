@@ -41,13 +41,15 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
     if (!mounted || _opened) return;
     final content = widget.content;
 
-    if (content.imageUrl != null || content.type == QrContentType.wifi) return;
+    if (content.type == QrContentType.wifi) return;
 
     if (!widget.autoOpenLink || content.actionUrl == null) return;
 
     final shouldOpen = switch (content.type) {
       QrContentType.url ||
       QrContentType.pdf ||
+      QrContentType.video ||
+      QrContentType.image ||
       QrContentType.location ||
       QrContentType.whatsapp ||
       QrContentType.phone ||
@@ -133,62 +135,64 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                 ],
                 FadeSlideIn(
                   delay: const Duration(milliseconds: 80),
-                  child: GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colors.accent.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                content.typeLabel(context),
-                                style: TextStyle(
-                                  color: colors.accent,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12.sp,
+                  child: TiltWidget(
+                    child: GlassCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colors.accent.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(
+                                  content.typeLabel(context),
+                                  style: TextStyle(
+                                    color: colors.accent,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12.sp,
+                                  ),
                                 ),
                               ),
+                            ],
+                          ),
+                          SizedBox(height: 14.h),
+                          Text(
+                            content.title,
+                            style: TextStyle(
+                              color: colors.textPrimary,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          if (wifi != null) ...[
+                            SizedBox(height: 12.h),
+                            _WifiDetails(wifi: wifi),
+                          ] else if (content.subtitle != null) ...[
+                            const SizedBox(height: 8),
+                            _TappableContent(
+                              text: content.subtitle!,
+                              isLink: content.isOpenableUrl,
+                              onTap: content.isOpenableUrl ? _openLink : null,
                             ),
                           ],
-                        ),
-                        SizedBox(height: 14.h),
-                        Text(
-                          content.title,
-                          style: TextStyle(
-                            color: colors.textPrimary,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        if (wifi != null) ...[
-                          SizedBox(height: 12.h),
-                          _WifiDetails(wifi: wifi),
-                        ] else if (content.subtitle != null) ...[
-                          const SizedBox(height: 8),
-                          _TappableContent(
-                            text: content.subtitle!,
-                            isLink: content.isOpenableUrl,
-                            onTap: content.isOpenableUrl ? _openLink : null,
-                          ),
+                          if (content.isOpenableUrl && content.actionUrl != null) ...[
+                            const SizedBox(height: 12),
+                            _TappableContent(
+                              text: content.actionUrl!,
+                              isLink: true,
+                              onTap: _openLink,
+                              hint: context.tr('tap_to_open'),
+                            ),
+                          ],
                         ],
-                        if (content.isOpenableUrl && content.actionUrl != null) ...[
-                          const SizedBox(height: 12),
-                          _TappableContent(
-                            text: content.actionUrl!,
-                            isLink: true,
-                            onTap: _openLink,
-                            hint: context.tr('tap_to_open'),
-                          ),
-                        ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -231,13 +235,29 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                       ),
                     ),
                   ),
-                if (content.isOpenableUrl && content.imageUrl == null)
+                if (content.isOpenableUrl)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: ElevatedButton.icon(
                       onPressed: _openLink,
-                      icon: const Icon(Icons.open_in_new_rounded),
-                      label: Text(context.tr('open_link')),
+                      icon: Icon(
+                        content.type == QrContentType.image
+                            ? Icons.image_rounded
+                            : content.type == QrContentType.pdf
+                                ? Icons.picture_as_pdf_rounded
+                                : content.type == QrContentType.video
+                                    ? Icons.play_circle_outline_rounded
+                                    : Icons.open_in_new_rounded,
+                      ),
+                      label: Text(
+                        content.type == QrContentType.image
+                            ? context.tr('open_image')
+                            : content.type == QrContentType.pdf
+                                ? context.tr('open_file')
+                                : content.type == QrContentType.video
+                                    ? context.tr('open_video')
+                                    : context.tr('open_link'),
+                      ),
                     ),
                   ),
                 Wrap(

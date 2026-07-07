@@ -1,11 +1,8 @@
 import 'dart:io';
 
-import 'package:barcode_app/l10n/app_strings.dart';
 import 'package:barcode_app/models/profile_data.dart';
 import 'package:barcode_app/services/media_storage.dart';
 import 'package:barcode_app/theme/app_theme.dart';
-import 'package:barcode_app/utils/app_responsive.dart';
-import 'package:barcode_app/widgets/responsive_layout.dart';
 import 'package:barcode_app/widgets/ui_components.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +11,11 @@ import 'package:url_launcher/url_launcher.dart';
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({
     super.key,
-
     required this.profile,
-
     this.showBarcode = false,
   });
 
   final ProfileData profile;
-
   final bool showBarcode;
 
   @override
@@ -35,14 +29,12 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
   @override
   void initState() {
     super.initState();
-
     _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-
     super.dispose();
   }
 
@@ -50,120 +42,81 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
   Widget build(BuildContext context) {
     final profile = widget.profile;
 
-    final colors = colorsOf(context);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
-
       appBar: AppBar(
         title: Text(
-          profile.fullName.isEmpty
-              ? context.tr('profile_view_title')
-              : profile.fullName,
+          profile.fullName.isEmpty ? 'بيانات البروفايل' : profile.fullName,
         ),
-
         bottom: TabBar(
           controller: _tabController,
-
-          indicatorColor: colors.accent,
-
-          labelColor: colors.accent,
-
-          unselectedLabelColor: colors.textMuted,
-
-          tabs: [
-            Tab(text: context.tr('personal_tab')),
-
-            Tab(text: context.tr('social_tab')),
+          indicatorColor: AppColors.accent,
+          labelColor: AppColors.accent,
+          unselectedLabelColor: AppColors.textMuted,
+          tabs: const [
+            Tab(text: 'البيانات الشخصية'),
+            Tab(text: 'وسائل التواصل'),
           ],
         ),
       ),
-
       body: GradientBackground(
         child: SafeArea(
-          child: ResponsiveLayout(
-            padding: EdgeInsets.zero,
-
-            child: Column(
-              children: [
-                if (widget.showBarcode) ...[
-                  SizedBox(height: 8.h),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-
-                    child: GlassCard(
-                      child: Column(
-                        children: [
-                          Text(
-                            context.tr('your_barcode'),
-
-                            style: TextStyle(
-                              color: colors.textPrimary,
-
-                              fontWeight: FontWeight.w700,
-
-                              fontSize: 16.sp,
-                            ),
+          child: Column(
+            children: [
+              if (widget.showBarcode) ...[
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GlassCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'باركود بياناتك',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w700,
                           ),
-
-                          SizedBox(height: 14.h),
-
-                          Container(
-                            padding: EdgeInsets.all(14.w),
-
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-
-                            child: BarcodeWidget(
-                              barcode: Barcode.qrCode(
-                                errorCorrectLevel:
-                                    BarcodeQRCorrectionLevel.high,
-                              ),
-
-                              data: profile.toBarcodePayload(),
-
-                              width: 220.w,
-
-                              height: 220.w,
-                            ),
+                        ),
+                        const SizedBox(height: 14),
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
                           ),
-
-                          SizedBox(height: 10.h),
-
-                          Text(
-                            context.tr('barcode_share_hint'),
-
-                            style: TextStyle(
-                              color: colors.textMuted,
-
-                              fontSize: 12.sp,
+                          child: BarcodeWidget(
+                            barcode: Barcode.qrCode(
+                              errorCorrectLevel: BarcodeQRCorrectionLevel.high,
                             ),
-
-                            textAlign: TextAlign.center,
+                            data: profile.toBarcodePayload(),
+                            width: 220,
+                            height: 220,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'يمكن لأي شخص مسح هذا الباركود — البيانات والمرفقات تظهر على أي جهاز',
+                          style: TextStyle(
+                            color: AppColors.textMuted,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-
-                    children: [
-                      _PersonalTab(profile: profile),
-
-                      _SocialTab(profile: profile),
-                    ],
                   ),
                 ),
               ],
-            ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _PersonalTab(profile: profile),
+                    _SocialTab(profile: profile),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -179,27 +132,20 @@ class _PersonalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
-
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
         if (profile.mediaType != ProfileMediaType.none) ...[
           GlassCard(child: _MediaPreview(profile: profile)),
-
-          SizedBox(height: 16.h),
+          const SizedBox(height: 16),
         ],
-
         GlassCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-
             children: [
-              _InfoRow(label: context.tr('full_name'), value: profile.fullName),
-
-              _InfoRow(label: context.tr('job_title'), value: profile.jobTitle),
-
-              _InfoRow(label: context.tr('email_label'), value: profile.email),
-
-              _InfoRow(label: context.tr('notes_label'), value: profile.notes),
+              _InfoRow(label: 'الاسم الكامل', value: profile.fullName),
+              _InfoRow(label: 'الوظيفة', value: profile.jobTitle),
+              _InfoRow(label: 'البريد الإلكتروني', value: profile.email),
+              _InfoRow(label: 'ملاحظات', value: profile.notes),
             ],
           ),
         ),
@@ -216,39 +162,18 @@ class _SocialTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
-
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
         GlassCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-
             children: [
-              _InfoRow(label: context.tr('facebook'), value: profile.facebook),
-
-              _InfoRow(
-                label: context.tr('instagram'),
-                value: profile.instagram,
-              ),
-              _InfoRow(label: context.tr('whatsapp'), value: profile.whatsapp),
-              _InfoRow(label: context.tr('telegram'), value: profile.telegram),
-              _InfoRow(label: context.tr('twitter'), value: profile.twitter),
-              _InfoRow(label: context.tr('youtube'), value: profile.youtube),
-              _InfoRow(label: context.tr('tiktok'), value: profile.tiktok),
-
-              _InfoRow(label: context.tr('linkedin'), value: profile.linkedin),
-
-              _InfoRow(label: context.tr('phone_label'), value: profile.phone),
-
-              _InfoRow(
-                label: context.tr('phone2_label'),
-                value: profile.phone2,
-              ),
-
-              _InfoRow(
-                label: context.tr('address_label'),
-                value: profile.address,
-              ),
+              _InfoRow(label: 'فيسبوك', value: profile.facebook),
+              _InfoRow(label: 'إنستجرام', value: profile.instagram),
+              _InfoRow(label: 'لينكدإن', value: profile.linkedin),
+              _InfoRow(label: 'رقم التليفون', value: profile.phone),
+              _InfoRow(label: 'رقم تليفون آخر', value: profile.phone2),
+              _InfoRow(label: 'العنوان', value: profile.address),
             ],
           ),
         ),
@@ -261,38 +186,26 @@ class _InfoRow extends StatelessWidget {
   const _InfoRow({required this.label, required this.value});
 
   final String label;
-
   final String value;
 
   @override
   Widget build(BuildContext context) {
     if (value.trim().isEmpty) return const SizedBox.shrink();
-
-    final colors = colorsOf(context);
-
     return Padding(
-      padding: EdgeInsets.only(bottom: 14.h),
-
+      padding: const EdgeInsets.only(bottom: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           Text(
             label,
-
-            style: TextStyle(color: colors.textMuted, fontSize: 13.sp),
+            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
           ),
-
-          SizedBox(height: 4.h),
-
+          const SizedBox(height: 4),
           Text(
             value,
-
-            style: TextStyle(
-              color: colors.textPrimary,
-
-              fontSize: 16.sp,
-
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -309,18 +222,14 @@ class _MediaPreview extends StatelessWidget {
 
   Future<void> _openRemote(BuildContext context) async {
     final url = profile.mediaUrl;
-
     if (url == null || url.isEmpty) return;
-
     final uri = Uri.tryParse(url);
-
     if (uri == null) return;
-
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(context.tr('link_open_failed'))));
+        ).showSnackBar(const SnackBar(content: Text('تعذر فتح الرابط')));
       }
     }
   }
@@ -328,99 +237,70 @@ class _MediaPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remoteUrl = profile.mediaUrl;
-
     if (remoteUrl != null && remoteUrl.isNotEmpty) {
       return _buildRemotePreview(context, remoteUrl);
     }
 
     final exists = MediaStorage.mediaExists(profile);
-
     if (!exists) {
-      final colors = colorsOf(context);
-
       return Column(
         children: [
           Icon(
             _iconForType(profile.mediaType),
-
-            size: 42.sp,
-
-            color: colors.textMuted,
+            size: 42,
+            color: AppColors.textMuted,
           ),
-
-          SizedBox(height: 10.h),
-
+          const SizedBox(height: 10),
           Text(
-            profile.mediaFileName ?? context.tr('attached_file'),
-
-            style: TextStyle(color: colors.textPrimary, fontSize: 14.sp),
-
+            profile.mediaFileName ?? 'ملف مرفق',
+            style: const TextStyle(color: AppColors.textPrimary),
             textAlign: TextAlign.center,
           ),
-
-          SizedBox(height: 6.h),
-
-          Text(
-            context.tr('media_unavailable'),
-
-            style: TextStyle(color: colors.textMuted, fontSize: 13.sp),
-
+          const SizedBox(height: 6),
+          const Text(
+            'الملف غير متاح — أنشئ باركود جديد مع اتصال إنترنت',
+            style: TextStyle(color: AppColors.textMuted, fontSize: 13),
             textAlign: TextAlign.center,
           ),
         ],
       );
     }
 
-    return _buildLocalPreview(context);
+    return _buildLocalPreview();
   }
 
   Widget _buildRemotePreview(BuildContext context, String url) {
-    final colors = colorsOf(context);
-
     if (profile.mediaType == ProfileMediaType.image || _looksLikeImage(url)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(16.r),
-
+            borderRadius: BorderRadius.circular(16),
             child: Image.network(
               url,
-
-              height: 220.h,
-
+              height: 220,
               width: double.infinity,
-
               fit: BoxFit.cover,
-
               loadingBuilder: (context, child, progress) {
                 if (progress == null) return child;
-
                 return Container(
-                  height: 220.h,
-
+                  height: 220,
                   alignment: Alignment.center,
-
-                  color: colors.surfaceLight,
-
-                  child: CircularProgressIndicator(color: colors.accent),
+                  color: AppColors.surfaceLight,
+                  child: const CircularProgressIndicator(
+                    color: AppColors.accent,
+                  ),
                 );
               },
-
               errorBuilder: (context, error, stackTrace) =>
                   _remoteFallback(context, url),
             ),
           ),
-
-          SizedBox(height: 10.h),
-
+          const SizedBox(height: 10),
           OutlinedButton.icon(
             onPressed: () => _openRemote(context),
-
-            icon: Icon(Icons.open_in_new_rounded, size: 18.sp),
-
-            label: Text(context.tr('open_image')),
+            icon: const Icon(Icons.open_in_new_rounded),
+            label: const Text('فتح الصورة'),
           ),
         ],
       );
@@ -430,56 +310,38 @@ class _MediaPreview extends StatelessWidget {
   }
 
   Widget _remoteFallback(BuildContext context, String url) {
-    final colors = colorsOf(context);
-
     return Container(
-      padding: EdgeInsets.all(18.w),
-
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: colors.surfaceLight.withValues(alpha: 0.55),
-
-        borderRadius: BorderRadius.circular(16.r),
+        color: AppColors.surfaceLight.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(16),
       ),
-
       child: Column(
         children: [
           Icon(
             profile.mediaType == ProfileMediaType.video
                 ? Icons.videocam_rounded
                 : Icons.insert_drive_file_rounded,
-
-            color: colors.accent,
-
-            size: 36.sp,
+            color: AppColors.accent,
+            size: 36,
           ),
-
-          SizedBox(height: 10.h),
-
+          const SizedBox(height: 10),
           Text(
-            profile.mediaFileName ?? context.tr('cloud_attachment'),
-
-            style: TextStyle(
-              color: colors.textPrimary,
-
+            profile.mediaFileName ?? 'مرفق سحابي',
+            style: const TextStyle(
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.w700,
-
-              fontSize: 14.sp,
             ),
-
             textAlign: TextAlign.center,
           ),
-
-          SizedBox(height: 12.h),
-
+          const SizedBox(height: 12),
           ElevatedButton.icon(
             onPressed: () => _openRemote(context),
-
-            icon: Icon(Icons.cloud_download_rounded, size: 18.sp),
-
+            icon: const Icon(Icons.cloud_download_rounded),
             label: Text(
               profile.mediaType == ProfileMediaType.video
-                  ? context.tr('open_video')
-                  : context.tr('open_file'),
+                  ? 'فتح الفيديو'
+                  : 'فتح الملف',
             ),
           ),
         ],
@@ -487,90 +349,63 @@ class _MediaPreview extends StatelessWidget {
     );
   }
 
-  Widget _buildLocalPreview(BuildContext context) {
-    final colors = colorsOf(context);
-
+  Widget _buildLocalPreview() {
     switch (profile.mediaType) {
       case ProfileMediaType.image:
         return ClipRRect(
-          borderRadius: BorderRadius.circular(16.r),
-
+          borderRadius: BorderRadius.circular(16),
           child: Image.file(
             File(profile.mediaPath!),
-
-            height: 220.h,
-
+            height: 220,
             width: double.infinity,
-
             fit: BoxFit.cover,
           ),
         );
-
       case ProfileMediaType.video:
       case ProfileMediaType.file:
         return Container(
-          padding: EdgeInsets.all(18.w),
-
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: colors.surfaceLight.withValues(alpha: 0.55),
-
-            borderRadius: BorderRadius.circular(16.r),
+            color: AppColors.surfaceLight.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(16),
           ),
-
           child: Row(
             children: [
               Container(
-                width: 56.w,
-
-                height: 56.w,
-
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
-                  color: colors.accent.withValues(alpha: 0.15),
-
-                  borderRadius: BorderRadius.circular(14.r),
+                  color: AppColors.accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(14),
                 ),
-
                 child: Icon(
                   profile.mediaType == ProfileMediaType.video
                       ? Icons.videocam_rounded
                       : Icons.insert_drive_file_rounded,
-
-                  color: colors.accent,
-
-                  size: 28.sp,
+                  color: AppColors.accent,
+                  size: 28,
                 ),
               ),
-
-              SizedBox(width: 14.w),
-
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
                     Text(
-                      profile.mediaFileName ?? context.tr('attached_file'),
-
-                      style: TextStyle(
-                        color: colors.textPrimary,
-
+                      profile.mediaFileName ?? 'ملف مرفق',
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.w700,
-
-                        fontSize: 14.sp,
                       ),
                     ),
-
-                    SizedBox(height: 4.h),
-
+                    const SizedBox(height: 4),
                     Text(
                       profile.mediaType == ProfileMediaType.video
-                          ? context.tr('video_saved_local')
-                          : context.tr('file_saved_local'),
-
-                      style: TextStyle(
-                        color: colors.textMuted,
-
-                        fontSize: 13.sp,
+                          ? 'فيديو محفوظ على الجهاز'
+                          : 'ملف محفوظ على الجهاز',
+                      style: const TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -579,7 +414,6 @@ class _MediaPreview extends StatelessWidget {
             ],
           ),
         );
-
       case ProfileMediaType.none:
         return const SizedBox.shrink();
     }
@@ -587,7 +421,6 @@ class _MediaPreview extends StatelessWidget {
 
   bool _looksLikeImage(String url) {
     final lower = url.toLowerCase();
-
     return lower.endsWith('.jpg') ||
         lower.endsWith('.jpeg') ||
         lower.endsWith('.png') ||
@@ -599,13 +432,10 @@ class _MediaPreview extends StatelessWidget {
     switch (type) {
       case ProfileMediaType.image:
         return Icons.image_not_supported_outlined;
-
       case ProfileMediaType.video:
         return Icons.videocam_off_outlined;
-
       case ProfileMediaType.file:
         return Icons.insert_drive_file_outlined;
-
       case ProfileMediaType.none:
         return Icons.block;
     }

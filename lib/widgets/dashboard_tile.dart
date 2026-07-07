@@ -1,4 +1,5 @@
 import 'package:barcode_app/theme/app_theme.dart';
+import 'package:barcode_app/widgets/ui_components.dart';
 import 'package:flutter/material.dart';
 
 class DashboardTile extends StatelessWidget {
@@ -20,9 +21,11 @@ class DashboardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = colorsOf(context);
-    return Material(
-      color: colors.surface.withValues(alpha: 0.85),
-      borderRadius: BorderRadius.circular(22),
+    return TiltWidget(
+      glowColor: color,
+      child: Material(
+        color: colors.surface.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(22),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(22),
@@ -66,6 +69,6 @@ class DashboardTile extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }

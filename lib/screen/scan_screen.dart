@@ -32,6 +32,10 @@ class _ScanScreenState extends State<ScanScreen> {
 
     if (!mounted) return;
 
+    final isMediaFile = content.type == QrContentType.image ||
+        content.type == QrContentType.pdf ||
+        content.type == QrContentType.video;
+
     if (content.imageUrl != null || content.type == QrContentType.profile) {
       await Navigator.pushReplacement(
         context,
@@ -39,7 +43,7 @@ class _ScanScreenState extends State<ScanScreen> {
           ScanResultScreen(
             content: content,
             recordId: record.id,
-            autoOpenLink: content.imageUrl == null,
+            autoOpenLink: isMediaFile || content.type != QrContentType.profile,
           ),
         ),
       );

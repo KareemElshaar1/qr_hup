@@ -389,3 +389,155 @@ Route<T> fadeSlideRoute<T>(Widget page) {
     },
   );
 }
+
+class TiltWidget extends StatefulWidget {
+  const TiltWidget({
+    super.key,
+    required this.child,
+    this.maxTiltX = 0.12,
+    this.maxTiltY = 0.12,
+    this.padding,
+    this.glowColor,
+  });
+
+  final Widget child;
+  final double maxTiltX;
+  final double maxTiltY;
+  final EdgeInsetsGeometry? padding;
+  final Color? glowColor;
+
+  @override
+  State<TiltWidget> createState() => _TiltWidgetState();
+}
+
+class _TiltWidgetState extends State<TiltWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _tiltXAnim;
+  late final Animation<double> _tiltYAnim;
+
+  double _tiltX = 0.0;
+  double _tiltY = 0.0;
+  bool _isTapping = false;
+  double _shadowOffsetMultiplier = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+  }
+
+  void _onPanUpdate(DragUpdateDetails details, Size size) {
+    if (size.width == 0 || size.height == 0) return;
+    final localPosition = details.localPosition;
+    final relX = (localPosition.dx / size.width) * 2 - 1;
+    final relY = (localPosition.dy / size.height) * 2 - 1;
+
+    setState(() {
+      _tiltY = relX.clamp(-1.0, 1.0) * widget.maxTiltY;
+      _tiltX = -relY.clamp(-1.0, 1.0) * widget.maxTiltX;
+      _isTapping = true;
+      _shadowOffsetMultiplier = 1.6;
+    });
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    _resetTilt();
+  }
+
+  void _resetTilt() {
+    final startX = _tiltX;
+    final startY = _tiltY;
+    _tiltXAnim = Tween<double>(begin: startX, end: 0.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+    _tiltYAnim = Tween<double>(begin: startY, end: 0.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    _controller.addListener(() {
+      setState(() {
+        _tiltX = _tiltXAnim.value;
+        _tiltY = _tiltYAnim.value;
+        _shadowOffsetMultiplier = 1.0 + (1.0 - _controller.value) * 0.6;
+      });
+    });
+
+    _controller.forward(from: 0).then((value) {
+      _controller.removeListener(() {});
+      setState(() {
+        _isTapping = false;
+        _shadowOffsetMultiplier = 1.0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = colorsOf(context);
+    final isDark = colors.isDark;
+    final glowColor = widget.glowColor ?? colors.accent;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = Size(
+          constraints.hasBoundedWidth ? constraints.maxWidth : 200.0,
+          constraints.hasBoundedHeight ? constraints.maxHeight : 150.0,
+        );
+        return GestureDetector(
+          onPanDown: (d) => setState(() {
+            _isTapping = true;
+            _shadowOffsetMultiplier = 1.6;
+          }),
+          onPanUpdate: (d) => _onPanUpdate(d, size),
+          onPanEnd: _onPanEnd,
+          onPanCancel: _resetTilt,
+          child: AnimatedScale(
+            scale: _isTapping ? 0.96 : 1.0,
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOutCubic,
+            child: Transform(
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.0015) // Perspective factor
+                ..rotateX(_tiltX)
+                ..rotateY(_tiltY),
+              alignment: Alignment.center,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: glowColor.withValues(
+                        alpha: isDark
+                            ? (0.12 * _shadowOffsetMultiplier)
+                            : (0.08 * _shadowOffsetMultiplier),
+                      ),
+                      blurRadius: 28 * _shadowOffsetMultiplier,
+                      offset: Offset(
+                        _tiltY * 35 * _shadowOffsetMultiplier,
+                        -_tiltX * 35 * _shadowOffsetMultiplier,
+                      ),
+                    ),
+                  ],
+                ),
+                child: widget.padding != null
+                    ? Padding(padding: widget.padding!, child: widget.child)
+                    : widget.child,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
